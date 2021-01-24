@@ -6,4 +6,9 @@ spring:
     password: 05dd8ab99eec01aa3de03acb68323b6daef0a574ddf9f6c8ffea4fa0b7141d5a
 
 server:
-    port: 9192
+    port: 8080
+    
+app:
+   jwt:
+      secret: javatech
+      TokenExpiry: 36000000

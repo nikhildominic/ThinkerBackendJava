@@ -56,7 +56,7 @@ public class ThinkerController {
 		return response;
 	}
 
-	@RequestMapping(value = "/current", method = RequestMethod.PUT)
+	@RequestMapping(value = "/current", method = RequestMethod.PUT, consumes = "application/json")
 	public GetIdentifierResponse putIdentifier(Principal principal, @RequestBody final ResetIdentifierRequest request) {
 
 		Users currentUser = repository.findByEmail(principal.getName());
@@ -87,7 +87,7 @@ public class ThinkerController {
 		return response;
 	}
 
-	@PostMapping("/authenticate")
+	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public Object generateToken(@RequestBody AuthRequest authRequest) throws Exception {
 		System.out.println("in auth cont:" + authRequest.getEmail());
 		try {
@@ -102,7 +102,7 @@ public class ThinkerController {
 		return response;
 	}
 
-	@PostMapping("/signup")
+	@PostMapping(value = "/signup" , consumes = "application/json")
 	public Object generateSignup(@RequestBody Users signupRequest) throws Exception {
 		System.out.println("in auth cont:" + signupRequest.getEmail());
 
