@@ -12,3 +12,4 @@ app:
    jwt:
       secret: javatech
       TokenExpiry: 36000000
+      
