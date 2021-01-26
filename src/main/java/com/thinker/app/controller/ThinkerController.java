@@ -2,22 +2,18 @@ package com.thinker.app.controller;
 
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.thinker.app.entity.AuthRequest;
 import com.thinker.app.entity.AuthResponse;
@@ -52,7 +48,7 @@ public class ThinkerController {
 	}
 
 	
-	@GetMapping(value = "/current")
+	@GetMapping(value = "/current", produces = "application/json")
 	public GetIdentifierResponse getuseridentifier(Principal principal) {
 		Users currentUser = repository.findByEmail(principal.getName());
 		GetIdentifierResponse response = new GetIdentifierResponse();
@@ -63,7 +59,7 @@ public class ThinkerController {
 		return response;
 	}
 
-	@RequestMapping(value = "/current", method = RequestMethod.PUT, consumes = "application/json")
+	@RequestMapping(value = "/current", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
 	public GetIdentifierResponse putIdentifier(Principal principal, @RequestBody final ResetIdentifierRequest request) {
 
 		Users currentUser = repository.findByEmail(principal.getName());
@@ -78,7 +74,7 @@ public class ThinkerController {
 		return response;
 	}
 
-	@GetMapping(value = "/next")
+	@GetMapping(value = "/next", produces = "application/json")
 	public GetIdentifierResponse nextIdentifier(Principal principal) {
 
 		Users currentUser = repository.findByEmail(principal.getName());
@@ -96,14 +92,13 @@ public class ThinkerController {
 
 	
 	
-	@PostMapping(value = "/authenticate", consumes = "application/json")
+	@PostMapping(value = "/authenticate", consumes = "application/json", produces = "application/json")
 	public Object generateToken(@RequestBody AuthRequest authRequest) throws Exception {
-		System.out.println("in auth cont:" + authRequest.getEmail());
 		try {
 			authentiactionManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 		} catch (Exception ex) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		AuthResponse response = new AuthResponse();
 		response.setToken(jwtUtil.generateToken(authRequest.getEmail()));
@@ -111,11 +106,9 @@ public class ThinkerController {
 		return response;
 	}
 
-	@PostMapping(value = "/signup" , consumes = "application/json")
+	@PostMapping(value = "/signup" , consumes = "application/json", produces = "application/json")
 	public Object generateSignup(@RequestBody Users signupRequest) throws Exception {
-		System.out.println("in auth cont:" + signupRequest.getEmail());
-
-		Users user = repository.findByEmail(signupRequest.getEmail());
+				Users user = repository.findByEmail(signupRequest.getEmail());
 
 		if (user != null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
