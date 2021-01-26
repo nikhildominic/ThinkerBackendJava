@@ -2,18 +2,22 @@ package com.thinker.app.controller;
 
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.thinker.app.entity.AuthRequest;
 import com.thinker.app.entity.AuthResponse;
@@ -37,14 +41,17 @@ public class ThinkerController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	
 
 	@GetMapping("/")
 	public String entryPoint(Principal principal) {
 		Users currentUser = repository.findByEmail(principal.getName());
 
-		return "Welcome " + currentUser.getFullname() + "!!";
+		return "Welcome home " + currentUser.getFullname() + "!!";
 	}
 
+	
 	@GetMapping(value = "/current")
 	public GetIdentifierResponse getuseridentifier(Principal principal) {
 		Users currentUser = repository.findByEmail(principal.getName());
@@ -87,6 +94,8 @@ public class ThinkerController {
 		return response;
 	}
 
+	
+	
 	@PostMapping(value = "/authenticate", consumes = "application/json")
 	public Object generateToken(@RequestBody AuthRequest authRequest) throws Exception {
 		System.out.println("in auth cont:" + authRequest.getEmail());
